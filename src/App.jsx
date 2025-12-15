@@ -5,6 +5,9 @@ import { searchMovies } from './services/tmdb'
 function App() {
   const [searchTerm, setSearchTerm] = useState('')
   const [movies, setMovies] = useState([])
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(0)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -13,6 +16,7 @@ function App() {
   useEffect(() => {
     if (!debouncedTerm.trim()) {
       setMovies([])
+      setPage(1)
       return
     }
 
@@ -22,6 +26,8 @@ function App() {
     searchMovies(debouncedTerm, 1)
       .then(data => {
         setMovies(data.results)
+        setTotalPages(data.total_pages)
+        setPage(2)
       })
       .catch(err => {
         console.error(err)
@@ -30,6 +36,8 @@ function App() {
       .finally(() => setLoading(false))
   }, [debouncedTerm])
 
+
+  
   return (
     <div className="min-h-screen bg-black text-white">
       {/* TMDB Header */}
